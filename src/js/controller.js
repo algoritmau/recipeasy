@@ -54,19 +54,28 @@ const renderRecipe = async function () {
     //   ...otherProps
     // })
 
-    // let sanitizedRecipe = renameObjectProps('image_url', 'imageUrl', recipe)
+    /**
+     * Renames object keys to mapped keys
+     * @param {Object} keysMap - Map of old keys to new keys
+     * @param {Object} obj - Object to rename keys
+     * @returns {Object} - Object with renamed keys
+     */
+    const renameObjKeys = (keysMap, obj) =>
+      Object.keys(obj).reduce(
+        (acc, key) => ({
+          ...acc,
+          ...{ [keysMap[key] || key]: obj[key] }
+        }),
+        {}
+      )
 
-    let sanitizedRecipe = {
-      id: recipe.id,
-      title: recipe.title,
-      publisher: recipe.publisher,
-      imageUrl: recipe.image_url,
-      sourceUrl: recipe.source_url,
-      ingredients: recipe.ingredients,
-      cookingTime: recipe.cooking_time,
-      servings: recipe.servings,
-      ingredients: recipe.ingredients
+    const keysMap = {
+      image_url: 'imageUrl',
+      source_url: 'sourceUrl',
+      cooking_time: 'cookingTime'
     }
+
+    const sanitizedRecipe = renameObjKeys(keysMap, recipe)
 
     // Rendering recipe data
     const recipeTemplate = `
