@@ -1,18 +1,13 @@
+import { API_URL } from './config'
 import { renameObjKeys } from './utils/renameObjKeys'
+import { getRecipeData } from './utils/utils'
 
 export const state = {}
 export const loadRecipe = async function (recipeId) {
   try {
-    const res = await fetch(
-      `https://forkify-api.herokuapp.com/api/v2/recipes/${recipeId}`
-    )
-    const data = await res.json()
+    const recipeData = await getRecipeData(`${API_URL}/${recipeId}`)
 
-    if (!res.ok) {
-      throw new Error(`${data.message} (${res.status})`)
-    }
-
-    const { recipe } = data.data
+    const { recipe } = recipeData.data
 
     const keysMap = {
       image_url: 'imageUrl',
@@ -22,6 +17,6 @@ export const loadRecipe = async function (recipeId) {
 
     state.recipe = renameObjKeys(keysMap, recipe)
   } catch (error) {
-    alert(`Error loading recipe (${error})`)
+    console.error(`🤯 Error loading recipe: (${error})`)
   }
 }
