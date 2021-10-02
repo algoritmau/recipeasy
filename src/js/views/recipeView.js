@@ -116,6 +116,12 @@ class RecipeView {
     `
   }
 
+  addHandlerRender = function (handler) {
+    ;[('load', 'hashchange')].forEach((event) =>
+      window.addEventListener(event, handler)
+    )
+  }
+
   renderSpinner = function (parentEl) {
     const spinnerMarkup = `
       <div class="spinner">

@@ -24,6 +24,8 @@ const renderRecipe = async function () {
   }
 }
 
-;[('load', 'hashchange')].forEach((event) =>
-  window.addEventListener(event, renderRecipe)
-)
+const init = function () {
+  recipeView.addHandlerRender(renderRecipe)
+}
+
+init()
