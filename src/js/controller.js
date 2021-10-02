@@ -9,6 +9,8 @@ import 'regenerator-runtime/runtime'
 const renderRecipe = async function () {
   try {
     const recipeId = window.location.hash.slice(1)
+    console.log('Recipe ID......')
+    console.log(recipeId)
 
     if (!recipeId) return
 
@@ -24,6 +26,6 @@ const renderRecipe = async function () {
   }
 }
 
-;[('hashchange', 'load')].forEach((event) =>
+;[('load', 'hashchange')].forEach((event) =>
   window.addEventListener(event, renderRecipe)
 )
