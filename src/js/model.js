@@ -1,6 +1,7 @@
 import { API_URL } from './config'
 import { renameObjKeys } from './utils/renameObjKeys'
 import { getRecipeData } from './utils/utils'
+import recipeView from './views/recipeView'
 
 export const state = {}
 export const loadRecipe = async function (recipeId) {
@@ -17,6 +18,6 @@ export const loadRecipe = async function (recipeId) {
 
     state.recipe = renameObjKeys(keysMap, recipe)
   } catch (error) {
-    console.error(`🤯 Error loading recipe: (${error})`)
+    throw error
   }
 }

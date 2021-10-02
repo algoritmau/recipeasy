@@ -20,7 +20,7 @@ const renderRecipe = async function () {
     // Rendering recipe data
     recipeView.render(state.recipe)
   } catch (error) {
-    console.error(error)
+    recipeView.renderError(`💥 An error has occured: ${error}`)
   }
 }
 
