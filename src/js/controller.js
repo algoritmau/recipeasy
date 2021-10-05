@@ -1,9 +1,10 @@
 import { loadRecipe, searchRecipes, state } from './model'
 import recipeView from './views/recipeView'
+import searchView from './views/searchView'
+import searchResultsView from './views/searchResultsView'
 
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
-import searchView from './views/searchView'
 
 const renderRecipe = async function () {
   try {
@@ -25,17 +26,18 @@ const renderRecipe = async function () {
 
 const controlSearchResults = async function () {
   try {
+    searchResultsView.renderSpinner()
+
     const query = searchView.getQuery()
     if (!query) return
 
     await searchRecipes(query)
-    console.log(state.search.results)
+
+    searchResultsView.render(state.search.results)
   } catch (error) {
     recipeView.renderError(`💥 An error has occured: ${error}`)
   }
 }
-
-controlSearchResults()
 
 const init = function () {
   recipeView.addHandlerRender(renderRecipe)
