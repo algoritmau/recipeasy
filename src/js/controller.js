@@ -1,7 +1,13 @@
-import { loadRecipe, searchRecipes, state } from './model'
+import {
+  loadRecipe,
+  paginateSearchedRecipes,
+  searchRecipes,
+  state
+} from './model'
 import recipeView from './views/recipeView'
 import searchView from './views/searchView'
 import searchResultsView from './views/searchResultsView'
+import paginationView from './views/paginationView'
 
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
@@ -33,15 +39,23 @@ const controlSearchResults = async function () {
 
     await searchRecipes(query)
 
-    searchResultsView.render(state.search.results)
+    searchResultsView.render(paginateSearchedRecipes(1))
+
+    paginationView.render(state.search)
   } catch (error) {
     recipeView.renderError(`💥 An error has occured: ${error}`)
   }
 }
 
-const init = function () {
+const controlPagination = (page) => {
+  searchResultsView.render(paginateSearchedRecipes(page))
+  paginationView.render(state.search)
+}
+
+const init = () => {
   recipeView.addHandlerRender(renderRecipe)
   searchView.addHandler(controlSearchResults)
+  paginationView.addClickHandler(controlPagination)
 }
 
 init()

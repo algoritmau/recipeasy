@@ -1,4 +1,4 @@
-import { API_URL } from './config'
+import { API_URL, SEARCH_RESULTS_PER_PAGE } from './config'
 import { renameObjKeys } from './utils/renameObjKeys'
 import { getRecipeData } from './utils/utils'
 
@@ -6,7 +6,9 @@ export const state = {
   recipe: {},
   search: {
     query: '',
-    results: []
+    results: [],
+    page: 1,
+    resultsPerPage: SEARCH_RESULTS_PER_PAGE
   }
 }
 
@@ -44,4 +46,13 @@ export const searchRecipes = async function (query) {
   } catch (error) {
     throw error
   }
+}
+
+export const paginateSearchedRecipes = function (page) {
+  state.search.page = page
+
+  const start = (page - 1) * 10
+  const end = start + 10
+
+  return state.search.results.slice(start, end)
 }
