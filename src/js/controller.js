@@ -2,7 +2,8 @@ import {
   loadRecipe,
   paginateSearchedRecipes,
   searchRecipes,
-  state
+  state,
+  updateServings
 } from './model'
 import recipeView from './views/recipeView'
 import searchView from './views/searchView'
@@ -52,10 +53,17 @@ const controlPagination = (page) => {
   paginationView.render(state.search)
 }
 
+const controlServings = (newServings) => {
+  updateServings(newServings)
+
+  recipeView.render(state.recipe)
+}
+
 const init = () => {
   recipeView.addHandlerRender(renderRecipe)
   searchView.addHandler(controlSearchResults)
   paginationView.addClickHandler(controlPagination)
+  recipeView.addUpdateServingsHandler(controlServings)
 }
 
 init()
