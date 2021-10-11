@@ -21,6 +21,9 @@ const renderRecipe = async function () {
 
     recipeView.renderSpinner()
 
+    // Update results view to highlight selected recipe
+    searchResultsView.update(paginateSearchedRecipes())
+
     // Loading recipe data
     await loadRecipe(recipeId)
 
