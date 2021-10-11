@@ -11,7 +11,7 @@ class SearchResultsView extends View {
     return this._data.map(
       (SearchResult) => `
       <li class="preview">
-        <a class="preview__link preview__link--active" href="#${SearchResult.id}">
+        <a class="preview__link" href="#${SearchResult.id}">
           <figure class="preview__fig">
             <img src=${SearchResult.imageUrl} alt=${SearchResult.title} crossOrigin= "anonymous" />
           </figure>
