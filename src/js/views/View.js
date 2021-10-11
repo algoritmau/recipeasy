@@ -14,6 +14,46 @@ export default class View {
     this._parentElement.insertAdjacentHTML('afterbegin', renderableMarkup)
   }
 
+  update(data) {
+    if (!data || (Array.isArray(data) && data.length == 0))
+      return this.renderError()
+
+    this._data = data
+
+    const updatedMarkup = this._generateMarkup()
+    const newDOM = document
+      .createRange()
+      .createContextualFragment(updatedMarkup)
+    const updatedElements = Array.from(newDOM.querySelectorAll('*'))
+    const currentElements = Array.from(
+      this._parentElement.querySelectorAll('*')
+    )
+
+    updatedElements.forEach((updatedElement, i) => {
+      const currentElement = currentElements[i]
+
+      // Changing text-based content
+      if (
+        !updatedElement.isEqualNode(currentElement) &&
+        updatedElement.firstChild?.nodeValue.trim() !== ''
+      ) {
+        currentElement.textContent = updatedElement.textContent
+      }
+
+      // Updating attributes
+      if (!updatedElement.isEqualNode(currentElement)) {
+        const updatedAttributes = Array.from(updatedElement.attributes)
+
+        updatedAttributes.forEach((updatedAttribute) => {
+          currentElement.setAttribute(
+            updatedAttribute.name,
+            updatedAttribute.value
+          )
+        })
+      }
+    })
+  }
+
   _clear() {
     this._parentElement.innerHTML = ''
   }
