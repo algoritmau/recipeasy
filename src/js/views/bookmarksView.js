@@ -7,6 +7,10 @@ class BookmarksView extends View {
     'Nothing to see here yet. Find your favorite recipes and bookmark them!'
   _successMessage = ''
 
+  addRenderHandler(handler) {
+    window.addEventListener('load', handler)
+  }
+
   _generateMarkup() {
     return this._data
       .map((bookmark) => previewView.render(bookmark, false))

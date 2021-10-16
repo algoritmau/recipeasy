@@ -26,6 +26,8 @@ const renderRecipe = async function () {
 
     // Update results view to highlight selected recipe
     searchResultsView.update(paginateSearchedRecipes())
+
+    // Update bookmarks view to render bookmarked recipes
     bookmarksView.update(state.bookmarks)
 
     // Loading recipe data
@@ -79,7 +81,12 @@ const controlRecipeBookmarking = () => {
   bookmarksView.render(state.bookmarks)
 }
 
+const controlRecipeBookmarks = () => {
+  bookmarksView.render(state.bookmarks)
+}
+
 const init = () => {
+  bookmarksView.addRenderHandler(controlRecipeBookmarks)
   recipeView.addHandlerRender(renderRecipe)
   searchView.addHandler(controlSearchResults)
   paginationView.addClickHandler(controlPagination)

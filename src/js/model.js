@@ -82,6 +82,8 @@ export const bookmarkRecipe = function (recipe) {
   if (recipe.id === state.recipe.id) {
     state.recipe.isBookmarked = true
   }
+
+  persistBookmarks()
 }
 
 export const unbookmarkRecipe = function (recipeId) {
@@ -91,4 +93,20 @@ export const unbookmarkRecipe = function (recipeId) {
 
   // Mark current recipe as not bookmarked
   if (recipeId === state.recipe.id) state.recipe.isBookmarked = false
+
+  persistBookmarks()
 }
+
+const persistBookmarks = function () {
+  localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks))
+}
+
+const getPersistedBookmarks = function () {
+  const bookmarks = localStorage.getItem('bookmarks')
+
+  if (bookmarks) {
+    state.bookmarks = JSON.parse(bookmarks)
+  }
+}
+
+getPersistedBookmarks()
