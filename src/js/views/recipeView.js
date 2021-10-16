@@ -60,9 +60,11 @@ class RecipeView extends View {
             <use href="${icons}#icon-user"></use>
           </svg>
         </div>
-        <button class="btn--round">
+        <button class="btn--round btn--bookmark">
           <svg class="">
-            <use href="${icons}#icon-bookmark-fill"></use>
+            <use href="${icons}#icon-bookmark${
+      this._data.isBookmarked ? '-fill' : ''
+    }"></use>
           </svg>
         </button>
       </div>
@@ -128,6 +130,16 @@ class RecipeView extends View {
       newServings = parseInt(newServings)
 
       if (newServings > 0) handler(newServings)
+    })
+  }
+
+  addRecipeBookmarkHandler(handler) {
+    this._parentElement.addEventListener('click', function (event) {
+      const bookmarkButton = event.target.closest('.btn--bookmark')
+
+      if (!bookmarkButton) return
+
+      handler()
     })
   }
 }
