@@ -5,13 +5,15 @@ import {
   searchRecipes,
   state,
   unbookmarkRecipe,
-  updateServings
+  updateServings,
+  uploadRecipe
 } from './model'
 import recipeView from './views/recipeView'
 import searchView from './views/searchView'
 import searchResultsView from './views/searchResultsView'
 import paginationView from './views/paginationView'
 import bookmarksView from './views/bookmarksView'
+import addRecipeView from './views/addRecipeView'
 
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
@@ -85,6 +87,33 @@ const controlRecipeBookmarks = () => {
   bookmarksView.render(state.bookmarks)
 }
 
+const controlAddRecipe = async (recipeData) => {
+  try {
+    addRecipeView.renderSpinner()
+
+    await uploadRecipe(recipeData)
+
+    // Render recipe
+    recipeView.render(state.recipe)
+
+    // Confirmation message
+    addRecipeView.renderMessage()
+
+    // Render bookmark view
+    bookmarksView.render(state.bookmarks)
+
+    // Add recipe id to url
+    window.history.pushState(null, null, `#${state.recipe.id}`)
+
+    // Close modal
+    setTimeout(() => {
+      addRecipeView.toggleModal()
+    }, 2000)
+  } catch (error) {
+    addRecipeView.renderError(error)
+  }
+}
+
 const init = () => {
   bookmarksView.addRenderHandler(controlRecipeBookmarks)
   recipeView.addHandlerRender(renderRecipe)
@@ -92,6 +121,7 @@ const init = () => {
   paginationView.addClickHandler(controlPagination)
   recipeView.addUpdateServingsHandler(controlServings)
   recipeView.addRecipeBookmarkHandler(controlRecipeBookmarking)
+  addRecipeView.addUploadRecipeHandler(controlAddRecipe)
 }
 
 init()

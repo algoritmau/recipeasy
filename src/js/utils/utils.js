@@ -1,12 +1,24 @@
 import { TIMEOUT_SECONDS } from '../config'
 
-export const getRecipeData = async function (url) {
+export const doAjaxRequest = async (url, recipeData = null) => {
   try {
-    const res = await Promise.race([fetch(url), timeout(TIMEOUT_SECONDS)])
-    const data = await res.json()
+    const fetchPromise = recipeData
+      ? fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(recipeData)
+        })
+      : fetch(url)
+    const response = await Promise.race([
+      fetchPromise,
+      timeout(TIMEOUT_SECONDS)
+    ])
+    const data = await response.json()
 
-    if (!res.ok) {
-      throw new Error(`${data.message} (${res.status})`)
+    if (!response.ok) {
+      throw new Error(`${data.message} (${response.status})`)
     }
 
     return data

@@ -1,6 +1,6 @@
-import { API_URL, SEARCH_RESULTS_PER_PAGE } from './config'
+import { API_KEY, API_URL, SEARCH_RESULTS_PER_PAGE } from './config'
 import { renameObjKeys } from './utils/renameObjKeys'
-import { getRecipeData } from './utils/utils'
+import { doAjaxRequest } from './utils/utils'
 
 export const state = {
   recipe: {},
@@ -15,7 +15,9 @@ export const state = {
 
 export const loadRecipe = async function (recipeId) {
   try {
-    const recipeData = await getRecipeData(`${API_URL}${recipeId}`)
+    const recipeData = await doAjaxRequest(
+      `${API_URL}${recipeId}?key=${API_KEY}`
+    )
 
     const { recipe } = recipeData.data
 
@@ -41,7 +43,9 @@ export const searchRecipes = async function (query) {
   try {
     state.search.query = query
 
-    const searchResults = await getRecipeData(`${API_URL}?search=${query}`)
+    const searchResults = await doAjaxRequest(
+      `${API_URL}?search=${query}&key=${API_KEY}`
+    )
 
     state.search.results = searchResults.data.recipes
 
@@ -110,3 +114,44 @@ const getPersistedBookmarks = function () {
 }
 
 getPersistedBookmarks()
+
+export const uploadRecipe = async function (recipeData) {
+  try {
+    const ingredients = Object.entries(recipeData)
+      .filter((entry) => entry[0].startsWith('ingredient') && entry[1] !== '')
+      .map((ingredient) => {
+        const ingredientsArray = ingredient[1].trim().split(',')
+        const [quantity, unit, description] = ingredientsArray
+
+        if (ingredientsArray.length !== 3)
+          throw new Error(
+            '❌ Invalid ingredient format. Please use the correct format to submit a recipe.'
+          )
+
+        return { quantity: quantity ? +quantity : null, unit, description }
+      })
+
+    const recipe = {
+      title: recipeData.title,
+      source_url: recipeData.sourceUrl,
+      image_url: recipeData.image,
+      publisher: recipeData.publisher,
+      cooking_time: +recipeData.cookingTime,
+      servings: +recipeData.servings,
+      ingredients,
+      key: recipeData.key
+    }
+    const { data } = await doAjaxRequest(`${API_URL}?key=${API_KEY}`, recipe)
+    const uploadedRecipe = data.recipe
+    const keysMap = {
+      image_url: 'imageUrl',
+      source_url: 'sourceUrl',
+      cooking_time: 'cookingTime'
+    }
+
+    state.recipe = renameObjKeys(keysMap, uploadedRecipe)
+    bookmarkRecipe(state.recipe)
+  } catch (error) {
+    throw error
+  }
+}
